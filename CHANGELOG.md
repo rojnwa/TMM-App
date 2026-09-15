@@ -6,6 +6,11 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [1.0.2] — 2026-09-15
+
+Point release on top of v1.0.1: multiple Teslas in one Bluetooth gate, plus
+navigation to whichever car is actually connected.
+
 ### Added
 - **Multi-Tesla.** The **Tesla connection** card (Settings → Forwarding, and the setup
   guide) now lets you select **every Tesla you drive** from the paired Bluetooth devices
