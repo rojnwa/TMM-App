@@ -6,10 +6,11 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-## [1.0.2] — 2026-09-15
+## [1.1.0] — 2026-09-15
 
-Point release on top of v1.0.1: multiple Teslas in one Bluetooth gate, plus
-navigation to whichever car is actually connected.
+Point release on top of v1.0.1: multiple Teslas in one Bluetooth gate,
+navigation to whichever car is actually connected, and a fix for fake
+addresses colliding with Telegram anonymous numbers.
 
 ### Added
 - **Multi-Tesla.** The **Tesla connection** card (Settings → Forwarding, and the setup
@@ -37,6 +38,18 @@ navigation to whichever car is actually connected.
 - **Wake-up targeted the wrong car.** `wake_up` for a sleeping vehicle used the globally
   selected vehicle id regardless of the VIN being commanded; it now uses the id of the
   addressed vehicle (looked up via the vehicle list if unknown).
+- **Fake addresses are one digit longer: `+888` + channel digit + 8-digit ID (13 chars).**
+  The old 8-digit form (`+888 XXXX XXXX`) is exactly the shape of Telegram/Fragment
+  anonymous numbers, so Telegram's contact sync matched the hidden bridge contacts to
+  strangers' accounts and showed them as chats named after your conversations. Existing
+  mappings migrate on next use, bridge contacts are rebuilt once on first start after the
+  update (the car re-pulls its phonebook), and replies to threads still carrying the old
+  address keep routing.
+
+### Internal
+- The contacts authenticator account type is derived from the `applicationId`, so the debug
+  build (`.debug`) can create its own bridge contacts next to an installed release build.
+  The release type string is unchanged.
 
 ## [1.0.1] — 2026-07-19
 
