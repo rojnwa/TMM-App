@@ -44,12 +44,12 @@ addresses colliding with Telegram anonymous numbers.
   strangers' accounts and showed them as chats named after your conversations. Existing
   mappings migrate on next use, bridge contacts are rebuilt once on first start after the
   update (the car re-pulls its phonebook), and replies to threads still carrying the old
-  address keep routing.
+  address keep routing. Reported and fixed by @rojnwa in [#11](https://github.com/LycheeAPPF/TMM-App/pull/11).
 
 ### Internal
 - The contacts authenticator account type is derived from the `applicationId`, so the debug
   build (`.debug`) can create its own bridge contacts next to an installed release build.
-  The release type string is unchanged.
+  The release type string is unchanged. (@rojnwa, [#11](https://github.com/LycheeAPPF/TMM-App/pull/11))
 
 ## [1.0.1] — 2026-07-19
 
