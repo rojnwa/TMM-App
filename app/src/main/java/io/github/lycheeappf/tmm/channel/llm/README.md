@@ -15,7 +15,7 @@ AssistantTriggerCoordinator.trigger(MANUAL_BUTTON)
 LlmStarter.start()
    ├─ check: privacy consent + default SMS app + API-Key + sendBudget
    ├─ MappingRepository.allocateOrReuse(LLM, "default-assistant", payload)
-   │     → deterministische FakeAddress +88810000001
+   │     → deterministische FakeAddress +888100000001
    ├─ LlmConversationStore.reset(mappingId)
    └─ SmsContentProviderWriter.injectIncoming(addr, "Hey …", displayName="Grok")
               │
@@ -29,7 +29,7 @@ LlmStarter.start()
 [User diktiert im Tesla "Wie ist das Wetter?"]
        │
        ▼
-AOSP MAP PushMessage → Outbox-Row "+88810000001"
+AOSP MAP PushMessage → Outbox-Row "+888100000001"
        │
        ▼
 OutboundSmsObserver.processRow
@@ -75,11 +75,11 @@ OutboundSmsObserver.processRow
 | Rate-Limit | 6/min, 30/h pro Mapping (`LlmRateLimiter`) |
 | API-Key | Android Keystore AES-256-GCM (`KeystoreApiKeyStore`). Backup ausgeschlossen via `data_extraction_rules.xml`. |
 | Tools (server-seitig) | **Shipped:** `web_search` + `x_search` (xAI Agent-Tools) hinter zwei opt-in Toggles. Der xAI-Server fährt die Such-Schleife selbst und liefert eine fertige Antwort in **einem** Response — **kein** Tool-Execution-Loop nötig, `store=false` bleibt. Aktiviert per Flag in `LlmRequest.webSearch`/`xSearch` → `GrokProvider.buildRequest` hängt `{"type":"web_search"}`/`{"type":"x_search"}` ans `tools`-Array und setzt `include:["no_inline_citations"]`. |
-| Tools (client-seitig) | Function-Calling-Architektur vorhanden (`AssistantTool`, `ToolRegistry`), V2 leer. V3 kann Notes/Calendar/… einklinken (braucht den noch fehlenden Tool-Execution-Loop). |
+| Tools (client-seitig) | Function-Calling-Architektur (`AssistantTool`, `ToolRegistry`, `ToolCallExecutor`-Loop). **Shipped:** `tesla_navigate` (`tools/tesla/TeslaNavigateTool`) — Ziel-Fahrzeug kommt vom `ActiveVehicleResolver` (verbundenes verknüpftes Tesla-Gerät, sonst Standard-Fahrzeug), Kommando über `TeslaVehicleCommandClient` (Fleet API). Weitere Tools = `@IntoSet` in `LlmModule`. |
 | Trigger | `AssistantTriggerCoordinator` als Single-Entry. V2: MANUAL_BUTTON. V3: BLE/QuickSettings/Intent. |
 | TTS-Safe | `LlmResponseFormatter` strippt Markdown, Code-Blöcke, Listen → flowing Text, max 800 Zeichen. |
 | Echo-Protection | `InjectedMessageLedger`: Outbox-Echos eigener Inserts (sollten praktisch nicht vorkommen) werden 10 s geblockt; Normalisierung strippt Display-Prefix vor Vergleich. |
-| Sender-Display | `Telephony.Sms.ADDRESS` trägt die reine Fake-Number `"+88810000007"`; der Name kommt über den Contact-Sync-Pfad (PBAP-Cache), sodass Tesla MCU2 z.B. "Grok" sauber zeigt. Falls Tesla die Reply-Address in Bracket-Form (`"Grok <+88810000007>"`) zurückschickt, strippt `FakeAddress.parse` `[^+0-9]` und resolved daraus wieder die `(channel, mappingId)` für's Reply-Routing. |
+| Sender-Display | `Telephony.Sms.ADDRESS` trägt die reine Fake-Number `"+888100000007"`; der Name kommt über den Contact-Sync-Pfad (PBAP-Cache), sodass Tesla MCU2 z.B. "Grok" sauber zeigt. Falls Tesla die Reply-Address in Bracket-Form (`"Grok <+888100000007>"`) zurückschickt, strippt `FakeAddress.parse` `[^+0-9]` und resolved daraus wieder die `(channel, mappingId)` für's Reply-Routing. |
 
 ## Trigger-Sources (V3-Vorbereitung)
 
